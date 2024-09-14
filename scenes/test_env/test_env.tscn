@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://deivr6lfgsms6"]
+
+[ext_resource type="PackedScene" uid="uid://dhbt3fprhsiqj" path="res://objects/player/player.tscn" id="1_iibc1"]
+[ext_resource type="Script" path="res://scenes/test_env/test_env.gd" id="1_ks50a"]
+
+[sub_resource type="Environment" id="Environment_1hwls"]
+
+[node name="TestEnv" type="Node3D"]
+script = ExtResource("1_ks50a")
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
+use_collision = true
+size = Vector3(20, 0.25, 20)
+
+[node name="Wall_01" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.125, 1.5, 0)
+use_collision = true
+size = Vector3(0.25, 3, 20)
+
+[node name="Wall_02" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.125, 1.5, 0)
+use_collision = true
+size = Vector3(0.25, 3, 20)
+
+[node name="Wall_03" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -10.125)
+use_collision = true
+size = Vector3(20, 3, 0.25)
+
+[node name="Wall_04" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 10.125)
+use_collision = true
+size = Vector3(20, 3, 0.25)
+
+[node name="Player" parent="." instance=ExtResource("1_iibc1")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1hwls")
