@@ -19,7 +19,6 @@ class_name Actor
 @export var speed_strafe : float = 6.0
 
 @export var motion : Vector2 = Vector2.ZERO
-@export var camera : GimbleCamera = null
 
 
 # ------------------------------------------------------------------------------
@@ -35,16 +34,15 @@ var _gravity : float = ProjectSettings.get_setting("physics/3d/default_gravity")
 # ------------------------------------------------------------------------------
 # Setters / Getters
 # ------------------------------------------------------------------------------
-func set_camera(c : GimbleCamera) -> void:
-	pass
+
 
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
 func _physics_process(delta: float) -> void:
 	var nvec_z : Vector3 = Vector3.ZERO
-	nvec_z = camera.basis.z * -(motion.y * (speed_forward if motion.y > 0.0 else speed_back))
-	var nvec_x = camera.basis.x * (motion.x * speed_strafe)
+	nvec_z = basis.z * -(motion.y * (speed_forward if motion.y > 0.0 else speed_back))
+	var nvec_x = basis.x * (motion.x * speed_strafe)
 	
 	velocity = (Vector3.DOWN * _gravity) + nvec_z + nvec_x
 	move_and_slide()

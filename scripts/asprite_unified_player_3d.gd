@@ -1,5 +1,6 @@
 extends Node3D
-class_name Viz3D
+class_name ASpriteUnifiedPlayer3D
+
 
 # ------------------------------------------------------------------------------
 # Signals
@@ -14,18 +15,21 @@ class_name Viz3D
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-@export var front_sprite : AnimatedSprite3D = null
-@export var back_sprite : AnimatedSprite3D = null
+
 
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-
+var _asprites : Dictionary = {}
 
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
-
+func _ready() -> void:
+	child_entered_tree.connect(_on_child_entered_tree)
+	child_exiting_tree.connect(_on_child_exiting_tree)
+	for child : Node in get_children():
+		_on_child_entered_tree(child)
 
 # ------------------------------------------------------------------------------
 # Setters / Getters
@@ -41,26 +45,25 @@ class_name Viz3D
 # Private Methods
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func play(anim_name : StringName) -> void:
-	if front_sprite != null:
-		front_sprite.play(anim_name)
-	if back_sprite != null:
-		back_sprite.play(anim_name)
+func play(anim_name : StringName, custom_speed : float = 1.0, from_end : bool = false) -> void:
+	for asprite : AnimatedSprite3D in _asprites.values():
+		asprite.play(anim_name, custom_speed, from_end)
 
 func stop() -> void:
-	if front_sprite != null:
-		front_sprite.stop()
-	if back_sprite != null:
-		back_sprite.stop()
+	for asprite : AnimatedSprite3D in _asprites.values():
+		asprite.stop()
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
+func _on_child_entered_tree(child : Node) -> void:
+	if child is AnimatedSprite3D:
+		if not child.name in _asprites:
+			_asprites[child.name] = child
 
-
-func _on_gimble_camera_yaw_changed(yaw: float) -> void:
-	pass # Replace with function body.
+func _on_child_exiting_tree(child : Node) -> void:
+	if child.name in _asprites:
+		_asprites.erase(child.name)

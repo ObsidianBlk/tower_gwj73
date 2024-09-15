@@ -1,10 +1,9 @@
-[gd_scene load_steps=21 format=3 uid="uid://dhbt3fprhsiqj"]
+[gd_scene load_steps=20 format=3 uid="uid://dhbt3fprhsiqj"]
 
-[ext_resource type="PackedScene" uid="uid://bswb5chxpkqhu" path="res://objects/gimble_camera/gimble_camera.tscn" id="1_ec4pg"]
 [ext_resource type="Script" path="res://objects/player/player.gd" id="1_pn4ps"]
 [ext_resource type="Texture2D" uid="uid://coxdfmgp4u0gb" path="res://assets/graphics/main_character/idle_fore.png" id="1_q8xk2"]
 [ext_resource type="Texture2D" uid="uid://byyu110aejuq3" path="res://assets/graphics/main_character/run_fore.png" id="2_3vdow"]
-[ext_resource type="Script" path="res://scripts/viz_3d.gd" id="2_b5mjp"]
+[ext_resource type="Script" path="res://scripts/asprite_unified_player_3d.gd" id="3_p7v3u"]
 [ext_resource type="Texture2D" uid="uid://68e1vr5wyawd" path="res://assets/graphics/main_character/idle_aft.png" id="3_ry40h"]
 [ext_resource type="Texture2D" uid="uid://d2urrqjefu2pm" path="res://assets/graphics/main_character/run_aft.png" id="4_8tfgp"]
 
@@ -108,26 +107,19 @@ animations = [{
 "speed": 8.0
 }]
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("viz", "camera")]
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_pn4ps")
-viz = NodePath("Viz3D")
-camera = NodePath("GimbleCamera")
-
-[node name="GimbleCamera" parent="." instance=ExtResource("1_ec4pg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.46119, 0)
-current = true
-max_zoom = 10.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_wi0ay")
 
-[node name="Viz3D" type="Node3D" parent="." node_paths=PackedStringArray("front_sprite", "back_sprite")]
-script = ExtResource("2_b5mjp")
-front_sprite = NodePath("AS_Fore")
-back_sprite = NodePath("AS_Aft")
+[node name="ASpriteUnifiedPlayer3D" type="Node3D" parent="."]
+script = ExtResource("3_p7v3u")
 
-[node name="AS_Fore" type="AnimatedSprite3D" parent="Viz3D"]
+[node name="AS_Fore" type="AnimatedSprite3D" parent="ASpriteUnifiedPlayer3D"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 offset = Vector2(0, 8)
 pixel_size = 0.125
@@ -137,7 +129,7 @@ sprite_frames = SubResource("SpriteFrames_0adji")
 animation = &"idle"
 frame_progress = 0.125676
 
-[node name="AS_Aft" type="AnimatedSprite3D" parent="Viz3D"]
+[node name="AS_Aft" type="AnimatedSprite3D" parent="ASpriteUnifiedPlayer3D"]
 offset = Vector2(0, 8)
 pixel_size = 0.125
 double_sided = false

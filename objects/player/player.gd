@@ -13,7 +13,7 @@ extends Actor
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-@export var viz : Viz3D = null
+@export var camera : GimbleCamera = null
 
 # ------------------------------------------------------------------------------
 # Variables
@@ -22,7 +22,7 @@ extends Actor
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
-
+@onready var _asup: ASpriteUnifiedPlayer3D = $ASpriteUnifiedPlayer3D
 
 # ------------------------------------------------------------------------------
 # Setters / Getters
@@ -42,15 +42,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		motion.x = Input.get_axis(&"move_left", &"move_right")
 
 func _process(delta: float) -> void:
-	if viz != null:
+	if _asup != null:
 		if velocity.length_squared() > 1.0:
-			viz.play(&"run")
+			_asup.play(&"run")
 		else:
-			viz.play(&"idle")
+			_asup.play(&"idle")
 		
 		if camera != null:
 			if velocity.length_squared() > 1.0:
-				viz.rotation.y = camera.rotation.y
+				rotation.y = camera.rotation.y
 
 # ------------------------------------------------------------------------------
 # Private Methods

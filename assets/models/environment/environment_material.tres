@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://cgck0t7nw75ea"]
+
+[ext_resource type="Texture2D" uid="uid://dnh4al7wsk0om" path="res://assets/models/environment/environment_textures_001.png" id="1_rfbmh"]
+
+[resource]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+depth_draw_mode = 1
+albedo_texture = ExtResource("1_rfbmh")
+texture_filter = 2
