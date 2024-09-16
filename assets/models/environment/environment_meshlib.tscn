@@ -40,9 +40,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 [node name="Floor_01" parent="Floor_01" index="0"]
 surface_material_override/0 = ExtResource("2_x0f0b")
 
-[node name="StaticBody" type="StaticBody3D" parent="Floor_01"]
+[node name="StaticBody" type="StaticBody3D" parent="Floor_01/Floor_01" index="0"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_01/StaticBody"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_01/Floor_01/StaticBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
 shape = SubResource("BoxShape3D_etn5h")
 
@@ -136,9 +136,9 @@ shape = SubResource("BoxShape3D_kuj1g")
 [node name="Wall_01" parent="." instance=ExtResource("12_6srq8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 
-[node name="StaticBody" type="StaticBody3D" parent="Wall_01"]
+[node name="StaticBody" type="StaticBody3D" parent="Wall_01/Wall_01" index="0"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall_01/StaticBody"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall_01/Wall_01/StaticBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -0.5)
 shape = SubResource("BoxShape3D_8fns6")
 
@@ -157,3 +157,4 @@ shape = SubResource("BoxShape3D_i76ip")
 [editable path="Floor_01"]
 [editable path="Floor_02/Floor_02_mesh"]
 [editable path="Floor_Grate_01/Floor_Grate_01_mesh"]
+[editable path="Wall_01"]
