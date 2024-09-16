@@ -168,7 +168,7 @@ func _physics_process(delta: float) -> void:
 		var cpoint : Vector3 = _clip_cast.get_collision_point()
 		var norm : Vector3 = cpoint.direction_to(_clip_cast.global_position)
 		_camera.global_position = cpoint + (norm * 0.2)
-	elif _clipped:
+	elif _clipped or abs(_camera.position.z - _target_zoom) > FLOAT_THRESHOLD:
 		_clipped = false
 		_camera.position = Vector3(0.0, 0.0, _target_zoom)
 
