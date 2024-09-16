@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkfdslgfhc3q0"]
+
+[ext_resource type="Script" path="res://scenes/map_gen_viewer/map_gen_viewer.gd" id="1_1plfq"]
+
+[node name="MapGenViewer" type="Node2D"]
+script = ExtResource("1_1plfq")
+
+[node name="ViewerUI" type="CanvasLayer" parent="."]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ViewerUI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="SeedField" type="VBoxContainer" parent="ViewerUI/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ViewerUI/HBoxContainer/SeedField"]
+layout_mode = 2
+text = "Seed:"
+
+[node name="SLIDER_Seed" type="HSlider" parent="ViewerUI/HBoxContainer/SeedField"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(384, 0)
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+
+[node name="BTN_Generate" type="Button" parent="ViewerUI/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Generate"
+
+[connection signal="value_changed" from="ViewerUI/HBoxContainer/SeedField/SLIDER_Seed" to="." method="_on_slider_seed_value_changed"]
+[connection signal="pressed" from="ViewerUI/HBoxContainer/BTN_Generate" to="." method="_on_btn_generate_pressed"]
