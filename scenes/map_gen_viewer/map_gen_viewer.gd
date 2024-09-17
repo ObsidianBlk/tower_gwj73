@@ -43,12 +43,22 @@ func _draw() -> void:
 		draw_rect(r, COLOR_ROOM, true)
 		draw_rect(r, COLOR_ROOM_WALLS, false, ROOM_WALL_WIDTH)
 	
+	#var tsize : float = 100.0
+	#var t : DTriangle = DTriangle.new(
+		#Vector2(0.0, tsize),
+		#Vector2(tsize, -tsize),
+		#Vector2(-tsize, -tsize)
+	#)
+	
 	var d : Delaunay = _map.get_delaunay()
 	if d != null:
-		for idx : int in range(d.get_edge_count()):
-			var edge : DLine = d.get_edge(idx)
-			if edge != null:
-				draw_line(edge.from, edge.to, Color.BROWN, 1.0, true)
+		for idx : int in range(d.get_triangle_count()):
+			var tri : DTriangle = d.get_triangle(idx)
+			_DrawTriangle(tri, Color.AQUA)
+		#for idx : int in range(d.get_edge_count()):
+			#var edge : DLine = d.get_edge(idx)
+			#if edge != null:
+				#draw_line(edge.from, edge.to, Color.BROWN, 1.0, true)
 
 func _physics_process(delta: float) -> void:
 	if _new_step:
@@ -59,7 +69,15 @@ func _physics_process(delta: float) -> void:
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
-
+func _DrawTriangle(t : DTriangle, color : Color, width : float = 1.0) -> void:
+	draw_line(t.v0, t.v1, color, width)
+	draw_line(t.v1, t.v2, color, width)
+	draw_line(t.v2, t.v0, color, width)
+	#draw_circle(t.v0, 2.0, Color.ALICE_BLUE, true)
+	#draw_circle(t.v1, 2.0, Color.ALICE_BLUE, true)
+	#draw_circle(t.v2, 2.0, Color.ALICE_BLUE, true)
+	#draw_circle(t.circum_center, 4.0, Color.TOMATO, true)
+	#draw_circle(t.circum_center, t.circum_radius, Color.SALMON, false, 1.0, true)
 
 # ------------------------------------------------------------------------------
 # Public Methods

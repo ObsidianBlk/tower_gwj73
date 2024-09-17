@@ -101,6 +101,15 @@ func get_circumcenter(b : DLine) -> Vector2:
 func is_equal_approx(b : DLine) -> bool:
 	return (from.is_equal_approx(b.from) and to.is_equal_approx(b.to)) or (from.is_equal_approx(b.to) and to.is_equal_approx(b.from))
 
+func is_connected_from(b : DLine) -> bool:
+	return from.is_equal_approx(b.to)
+
+func is_connected_to(b : DLine) -> bool:
+	return to.is_equal_approx(b.from)
+
+func as_string() -> String:
+	return "|%v - %v|"%[from, to]
+
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
