@@ -94,6 +94,9 @@ func is_equal_approx(tri : DTriangle) -> bool:
 		(v0.is_equal_approx(tri.v1) and v1.is_equal_approx(tri.v2) and v2.is_equal_approx(tri.v0)) or \
 		(v0.is_equal_approx(tri.v2) and v1.is_equal_approx(tri.v0) and v2.is_equal_approx(tri.v1))
 
+func as_string() -> String:
+	return "V0: %v\nV1: %v\nV2: %v\n\n"%[v0, v1, v2]
+
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
