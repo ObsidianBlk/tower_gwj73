@@ -30,6 +30,7 @@ const ZOOM_RATE : float = 10.0
 @export_range(0.001, 10.0, 0.001) var near : float = 0.05:	set=set_near
 @export_range(0.01, 4000.0, 0.01) var far : float = 4000.0:	set=set_far
 @export var attributes : CameraAttributes:					set=set_attributes
+@export var relative_offset : Vector2
 
 @export_subgroup("Pitch")
 @export_range(-90.0, 90.0) var min_pitch_angle : float = -90.0:	set=set_min_pitch_angle
@@ -159,27 +160,27 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	if _clip_cast == null or _camera == null: return
-	if abs(_clip_cast.target_position.z - _target_zoom) > FLOAT_THRESHOLD:
-		_clip_cast.target_position.z = _target_zoom
+	var desired_camera_pos : Vector3 = Vector3(relative_offset.x, 0.0, _target_zoom)
+	if not _clip_cast.target_position.is_equal_approx(desired_camera_pos):
+		_clip_cast.target_position = desired_camera_pos
 		_clip_cast.force_raycast_update()
+	
+	if abs(_inner_gimble.position.y - relative_offset.y) > FLOAT_THRESHOLD:
+		_inner_gimble.position.y = relative_offset.y
 	
 	if _clip_cast.is_colliding():
 		_clipped = true
 		var cpoint : Vector3 = _clip_cast.get_collision_point()
 		var norm : Vector3 = cpoint.direction_to(_clip_cast.global_position)
 		_camera.global_position = cpoint + (norm * 0.2)
-	elif _clipped or abs(_camera.position.z - _target_zoom) > FLOAT_THRESHOLD:
+	elif _clipped or not _camera.position.is_equal_approx(desired_camera_pos):
 		_clipped = false
-		_camera.position = Vector3(0.0, 0.0, _target_zoom)
+		_camera.position = desired_camera_pos
 
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
 func _CalculateFollowPosition(fposition : Vector3, tposition : Vector3, delta : float) -> Vector3:
-	var oy : float = fposition.y # Remember the from position Y value. This will not change in the result.
-	fposition = fposition * Vector3(1.0, 0.0, 1.0) # Remove Y from the vector
-	tposition = tposition * Vector3(1.0, 0.0, 1.0) # Again
-	
 	var final_position : Vector3 = tposition # Assume we snap to the target position
 	# If we have no follow_speed, just snap to the target position... which, we already assumed.
 	if follow_speed > 0.0:
@@ -196,8 +197,6 @@ func _CalculateFollowPosition(fposition : Vector3, tposition : Vector3, delta : 
 			var weight : float = min(1.0, max_unit_dist/dist)
 			final_position = lerp(fposition, tposition, weight)
 	
-	# Restore the Y position
-	final_position.y = oy
 	return final_position
 
 func _CalculateTargetZoom(delta : float) -> void:

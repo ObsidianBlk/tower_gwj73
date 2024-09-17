@@ -15,14 +15,15 @@ signal generation_completed()
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
 
-const MNX_MAP_RADIUS : Vector2 = Vector2(400.0, 2000.0)
-const MNX_ROOM_COUNT : Vector2i = Vector2i(10, 200)
+const MNX_MAP_RADIUS : Vector2 = Vector2(60.0, 100.0)
+const MNX_ROOM_COUNT : Vector2i = Vector2i(5, 20)
 const MNX_ROOM_WIDTH : Vector2i = Vector2i(10, 64)
 const MNX_ROOM_HEIGHT : Vector2i = Vector2i(10, 64)
 
 const GEN_FIELD_MAP_RADIUS : StringName = &"MapRadius"
 const GEN_FIELD_ROOM_COUNT : StringName = &"RoomCount"
 const GEN_FIELD_PUSH_ROOMS : StringName = &"PushRooms"
+const GEN_FIELD_CALC_DEL : StringName = &"CalcDel"
 
 # ------------------------------------------------------------------------------
 # Export Variables
@@ -37,6 +38,7 @@ var _rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 var _gendata : Dictionary = {}
 var _rooms : Array[Dictionary] = []
+var _delaunay : Delaunay = null
 
 # ------------------------------------------------------------------------------
 # Setters / Getters
@@ -78,8 +80,8 @@ func _PushRooms() -> int:
 	
 	for cidx : int in range(_rooms.size()):
 		var crm : Dictionary = _rooms[cidx]
-		var crad : int = max(crm["w"], crm["h"])
 		var cpoint : Vector2 = crm["p"]
+		var crad : int = (Vector2(crm["w"], crm["h"]) * 0.5).length()
 		
 		var neighbors : int = 0
 		var pushv : Vector2 = Vector2.ZERO
@@ -87,11 +89,11 @@ func _PushRooms() -> int:
 		for idx : int in range(_rooms.size()):
 			if idx == cidx : continue
 			var rm : Dictionary = _rooms[idx]
-			var rad : int = max(rm["w"], rm["h"])
+			var rad : int = (Vector2(rm["w"], rm["h"]) * 0.5).length()
 			var point : Vector2 = rm["p"]
 			
-			var trad : float = float(crad + rad)
-			var vdir : Vector2 = point - cpoint
+			var vdir : Vector2 = cpoint - point
+			var trad : float = rad + crad
 			if vdir.length() < trad:
 				neighbors += 1
 				pushv += vdir
@@ -103,17 +105,26 @@ func _PushRooms() -> int:
 	
 	if pushed:
 		for idx : int in range(_rooms.size()):
-			_rooms[idx]["p"] += _rooms[idx]["push"]
-			_rooms[idx].erase("push")
+			if "push" in _rooms[idx]:
+				_rooms[idx]["p"] += floor(_rooms[idx]["push"])
+				_rooms[idx].erase("push")
 		return ERR_BUSY
 	
 	return OK
+
+func _GetRoomLocations() -> Array[Vector2]:
+	var plist : Array[Vector2] = []
+	for idx : int in range(_rooms.size()):
+		var r : Rect2 = get_room_rect(idx)
+		plist.append(r.position)
+	return plist
 
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
 func clear() -> void:
+	_delaunay = null
 	_rooms.clear()
 	_gendata.clear()
 
@@ -143,6 +154,14 @@ func generate_step() -> int:
 	elif GEN_FIELD_PUSH_ROOMS in _gendata:
 		if _PushRooms() == OK:
 			_gendata.erase(GEN_FIELD_PUSH_ROOMS)
+			_gendata[GEN_FIELD_CALC_DEL] = true
+		generation_step_completed.emit(ERR_BUSY)
+		return ERR_BUSY
+	
+	elif GEN_FIELD_CALC_DEL in _gendata:
+		_delaunay = Delaunay.new()
+		_delaunay.generate(_GetRoomLocations())
+		_gendata.erase(GEN_FIELD_CALC_DEL)
 		generation_step_completed.emit(ERR_BUSY)
 		return ERR_BUSY
 	
@@ -168,8 +187,13 @@ func get_room_count() -> int:
 
 func get_room_rect(idx : int) -> Rect2:
 	if idx >= 0 and idx < _rooms.size():
-		return Rect2(_rooms[idx]["p"], Vector2(_rooms[idx]["w"], _rooms[idx]["h"]))
+		var size : Vector2 = Vector2(_rooms[idx]["w"], _rooms[idx]["h"])
+		var pos : Vector2 = _rooms[idx]["p"] - (size * 0.5)
+		return Rect2(pos, size)
 	return Rect2(Vector2.ZERO, Vector2.ZERO)
+
+func get_delaunay() -> Delaunay:
+	return _delaunay
 
 # ------------------------------------------------------------------------------
 # Handler Methods

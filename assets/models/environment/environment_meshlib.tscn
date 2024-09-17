@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://tu4v656xf72h"]
+[gd_scene load_steps=17 format=3 uid="uid://tu4v656xf72h"]
 
 [ext_resource type="PackedScene" uid="uid://bmgji8bosevga" path="res://assets/models/environment/Floor_01.glb" id="1_mwlv5"]
 [ext_resource type="Material" uid="uid://cgck0t7nw75ea" path="res://assets/models/environment/environment_material.tres" id="2_x0f0b"]
@@ -14,147 +14,174 @@
 [ext_resource type="PackedScene" uid="uid://d3oiuqj00u3f2" path="res://assets/models/environment/Wall_01.glb" id="12_6srq8"]
 [ext_resource type="PackedScene" uid="uid://7d8glnnto4p7" path="res://assets/models/environment/Wall_Corner_01.glb" id="13_ket5a"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_etn5h"]
-size = Vector3(1, 0.25, 1)
+[sub_resource type="BoxShape3D" id="BoxShape3D_wptkw"]
+size = Vector3(2, 4, 0.25)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_5hq7e"]
-size = Vector3(1, 0.25, 1)
+[sub_resource type="BoxShape3D" id="BoxShape3D_a0ekw"]
+size = Vector3(1, 4, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_jk1ys"]
-size = Vector3(1, 0.25, 1)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_kuj1g"]
-size = Vector3(0.5, 2, 0.5)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_8fns6"]
-size = Vector3(1, 2, 0.2)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_i76ip"]
-size = Vector3(1, 2, 0.2)
+[sub_resource type="BoxShape3D" id="BoxShape3D_6lvx6"]
+size = Vector3(2, 0.5, 2)
 
 [node name="Environment_Meshlib" type="Node3D"]
 
+[node name="Wall_Corner_01" parent="." instance=ExtResource("13_ket5a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+
+[node name="Wall_Corner_01" parent="Wall_Corner_01" index="0"]
+surface_material_override/0 = ExtResource("2_x0f0b")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Wall_Corner_01/Wall_Corner_01" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall_Corner_01/Wall_Corner_01/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1)
+shape = SubResource("BoxShape3D_wptkw")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Wall_Corner_01/Wall_Corner_01/StaticBody3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1, 2, 0)
+shape = SubResource("BoxShape3D_wptkw")
+
+[node name="Wall_01" parent="." instance=ExtResource("12_6srq8")]
+
+[node name="Wall_01" parent="Wall_01" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+surface_material_override/0 = ExtResource("2_x0f0b")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Wall_01/Wall_01" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall_01/Wall_01/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1)
+shape = SubResource("BoxShape3D_wptkw")
+
+[node name="Pillar_A" parent="." instance=ExtResource("9_7vtqb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+
+[node name="Pillar_A" parent="Pillar_A" index="0"]
+surface_material_override/0 = ExtResource("2_x0f0b")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Pillar_A/Pillar_A" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pillar_A/Pillar_A/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2, -1)
+shape = SubResource("BoxShape3D_a0ekw")
+
+[node name="Pillar_B" parent="." instance=ExtResource("10_u4a8i")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+
+[node name="Pillar_B" parent="Pillar_B" index="0"]
+surface_material_override/0 = ExtResource("2_x0f0b")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Pillar_B/Pillar_B" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pillar_B/Pillar_B/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2, -1)
+shape = SubResource("BoxShape3D_a0ekw")
+
+[node name="Pillar_C" parent="." instance=ExtResource("11_eloe5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 0)
+
+[node name="Pillar_C" parent="Pillar_C" index="0"]
+surface_material_override/0 = ExtResource("2_x0f0b")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Pillar_C/Pillar_C" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pillar_C/Pillar_C/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2, -1)
+shape = SubResource("BoxShape3D_a0ekw")
+
 [node name="Floor_01" parent="." instance=ExtResource("1_mwlv5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
 
 [node name="Floor_01" parent="Floor_01" index="0"]
 surface_material_override/0 = ExtResource("2_x0f0b")
 
-[node name="StaticBody" type="StaticBody3D" parent="Floor_01/Floor_01" index="0"]
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor_01/Floor_01" index="0"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_01/Floor_01/StaticBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
-shape = SubResource("BoxShape3D_etn5h")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_01/Floor_01/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape3D_6lvx6")
 
-[node name="Floor_02" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+[node name="Floor_02" parent="." instance=ExtResource("3_esite")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
 
-[node name="Floor_02_mesh" parent="Floor_02" instance=ExtResource("3_esite")]
-
-[node name="Floor_02" parent="Floor_02/Floor_02_mesh" index="0"]
+[node name="Floor_02" parent="Floor_02" index="0"]
 surface_material_override/0 = ExtResource("2_x0f0b")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_02"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
-shape = SubResource("BoxShape3D_5hq7e")
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor_02/Floor_02" index="0"]
 
-[node name="Floor_Grate_01" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_02/Floor_02/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape3D_6lvx6")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_Grate_01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
-shape = SubResource("BoxShape3D_jk1ys")
+[node name="Floor_Grate_01" parent="." instance=ExtResource("4_yutxy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 0)
 
-[node name="Floor_Grate_01_mesh" parent="Floor_Grate_01" instance=ExtResource("4_yutxy")]
-
-[node name="Floor_Grate_01" parent="Floor_Grate_01/Floor_Grate_01_mesh" index="0"]
+[node name="Floor_Grate_01" parent="Floor_Grate_01" index="0"]
 surface_material_override/0 = ExtResource("2_x0f0b")
 
-[node name="Floor_Grate_02" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor_Grate_01/Floor_Grate_01" index="0"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_Grate_02"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
-shape = SubResource("BoxShape3D_jk1ys")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_Grate_01/Floor_Grate_01/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape3D_6lvx6")
 
-[node name="Floor_Grate_02_mesh" parent="Floor_Grate_02" instance=ExtResource("5_etdm0")]
+[node name="Floor_Grate_02" parent="." instance=ExtResource("5_etdm0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 0)
 
-[node name="Floor_Tiled_01" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1)
+[node name="Floor_Grate_02" parent="Floor_Grate_02" index="0"]
+surface_material_override/0 = ExtResource("2_x0f0b")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_Tiled_01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
-shape = SubResource("BoxShape3D_jk1ys")
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor_Grate_02/Floor_Grate_02" index="0"]
 
-[node name="Floor_Tiled_01_mesh" parent="Floor_Tiled_01" instance=ExtResource("6_cp7pi")]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_Grate_02/Floor_Grate_02/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape3D_6lvx6")
 
-[node name="Floor_Tiled_02" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 2)
+[node name="Floor_Tiled_01" parent="." instance=ExtResource("6_cp7pi")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_Tiled_02"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
-shape = SubResource("BoxShape3D_jk1ys")
+[node name="Floor_Tiled_01" parent="Floor_Tiled_01" index="0"]
+surface_material_override/0 = ExtResource("2_x0f0b")
 
-[node name="Floor_Tiled_02_mesh" parent="Floor_Tiled_02" instance=ExtResource("7_rlfk5")]
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor_Tiled_01/Floor_Tiled_01" index="0"]
 
-[node name="Floor_Tiled_03" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 3)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_Tiled_01/Floor_Tiled_01/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape3D_6lvx6")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_Tiled_03"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
-shape = SubResource("BoxShape3D_jk1ys")
+[node name="Floor_Tiled_02" parent="." instance=ExtResource("7_rlfk5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 2)
 
-[node name="Floor_Tiled_03_mesh" parent="Floor_Tiled_03" instance=ExtResource("8_8x3jo")]
+[node name="Floor_Tiled_02" parent="Floor_Tiled_02" index="0"]
+surface_material_override/0 = ExtResource("2_x0f0b")
 
-[node name="Pillar_A" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor_Tiled_02/Floor_Tiled_02" index="0"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Pillar_A"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
-shape = SubResource("BoxShape3D_kuj1g")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_Tiled_02/Floor_Tiled_02/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape3D_6lvx6")
 
-[node name="Pillar_A_mesh" parent="Pillar_A" instance=ExtResource("9_7vtqb")]
+[node name="Floor_Tiled_03" parent="." instance=ExtResource("8_8x3jo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 2)
 
-[node name="Pillar_B" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+[node name="Floor_Tiled_03" parent="Floor_Tiled_03" index="0"]
+surface_material_override/0 = ExtResource("2_x0f0b")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Pillar_B"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
-shape = SubResource("BoxShape3D_kuj1g")
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor_Tiled_03/Floor_Tiled_03" index="0"]
 
-[node name="Pillar_B_mesh" parent="Pillar_B" instance=ExtResource("10_u4a8i")]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor_Tiled_03/Floor_Tiled_03/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape3D_6lvx6")
 
-[node name="Pillar_C" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Pillar_C"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
-shape = SubResource("BoxShape3D_kuj1g")
-
-[node name="Pillar_C_mesh" parent="Pillar_C" instance=ExtResource("11_eloe5")]
-
-[node name="Wall_01" parent="." instance=ExtResource("12_6srq8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
-
-[node name="StaticBody" type="StaticBody3D" parent="Wall_01/Wall_01" index="0"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall_01/Wall_01/StaticBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -0.5)
-shape = SubResource("BoxShape3D_8fns6")
-
-[node name="Wall_Corner_01" type="StaticBody3D" parent="."]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall_Corner_01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -0.5)
-shape = SubResource("BoxShape3D_i76ip")
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="Wall_Corner_01"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.5, 1, 0)
-shape = SubResource("BoxShape3D_i76ip")
-
-[node name="Wall_Corner_01_mesh" parent="Wall_Corner_01" instance=ExtResource("13_ket5a")]
-
-[editable path="Floor_01"]
-[editable path="Floor_02/Floor_02_mesh"]
-[editable path="Floor_Grate_01/Floor_Grate_01_mesh"]
+[editable path="Wall_Corner_01"]
 [editable path="Wall_01"]
+[editable path="Pillar_A"]
+[editable path="Pillar_B"]
+[editable path="Pillar_C"]
+[editable path="Floor_01"]
+[editable path="Floor_02"]
+[editable path="Floor_Grate_01"]
+[editable path="Floor_Grate_02"]
+[editable path="Floor_Tiled_01"]
+[editable path="Floor_Tiled_02"]
+[editable path="Floor_Tiled_03"]

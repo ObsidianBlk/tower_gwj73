@@ -14,7 +14,7 @@ dest_files=["res://.godot/imported/Floor_Tiled_01.glb-b50dc64563b70f3d015e41f47c
 [params]
 
 nodes/root_type=""
-nodes/root_name=""
+nodes/root_name="Floor_Tiled_01"
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
 nodes/import_as_skeleton_bones=false
@@ -40,4 +40,4 @@ _subresources={
 }
 }
 gltf/naming_version=1
-gltf/embedded_image_handling=1
+gltf/embedded_image_handling=0
