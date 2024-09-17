@@ -24,6 +24,8 @@ const GEN_FIELD_MAP_RADIUS : StringName = &"MapRadius"
 const GEN_FIELD_ROOM_COUNT : StringName = &"RoomCount"
 const GEN_FIELD_PUSH_ROOMS : StringName = &"PushRooms"
 const GEN_FIELD_CALC_DEL : StringName = &"CalcDel"
+const GEN_FIELD_ROOM_LOC : StringName = &"RoomLoc"
+const GEN_FIELD_ROOM_LOC_INDEX : StringName = &"RoomLocIndex"
 
 # ------------------------------------------------------------------------------
 # Export Variables
@@ -119,6 +121,18 @@ func _GetRoomLocations() -> Array[Vector2]:
 		plist.append(r.position)
 	return plist
 
+func _CalculateContainingRect(points : Array[Vector2]) -> Rect2:
+	var vmin : Vector2 = Vector2.INF
+	var vmax : Vector2 = -Vector2.INF
+	
+	for point : Vector2 in points:
+		vmin.x = min(vmin.x, point.x)
+		vmin.y = min(vmin.y, point.y)
+		vmax.x = max(vmax.x, point.x)
+		vmax.y = max(vmax.y, point.y)
+	
+	return Rect2(vmin, vmax - vmin)
+	
 
 # ------------------------------------------------------------------------------
 # Public Methods
@@ -159,9 +173,21 @@ func generate_step() -> int:
 		return ERR_BUSY
 	
 	elif GEN_FIELD_CALC_DEL in _gendata:
-		_delaunay = Delaunay.new()
-		_delaunay.generate(_GetRoomLocations())
-		_gendata.erase(GEN_FIELD_CALC_DEL)
+		if _delaunay == null:
+			_delaunay = Delaunay.new()
+			_gendata[GEN_FIELD_ROOM_LOC] = _GetRoomLocations()
+			_gendata[GEN_FIELD_ROOM_LOC_INDEX] = 0
+			_delaunay.start_generate(_gendata[GEN_FIELD_ROOM_LOC])
+		var idx : int = _gendata[GEN_FIELD_ROOM_LOC_INDEX]
+		if idx < _gendata[GEN_FIELD_ROOM_LOC].size():
+			_delaunay.add_point(_gendata[GEN_FIELD_ROOM_LOC][idx])
+			_gendata[GEN_FIELD_ROOM_LOC_INDEX] = idx + 1
+		else:
+			_delaunay.end_generation()
+			_gendata.erase(GEN_FIELD_CALC_DEL)
+			_gendata.erase(GEN_FIELD_ROOM_LOC)
+			_gendata.erase(GEN_FIELD_ROOM_LOC_INDEX)
+		#_delaunay.generate(_GetRoomLocations())
 		generation_step_completed.emit(ERR_BUSY)
 		return ERR_BUSY
 	

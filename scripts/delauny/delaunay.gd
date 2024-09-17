@@ -10,6 +10,7 @@ class_name Delaunay
 # ------------------------------------------------------------------------------
 var _edges : Array[DLine] = []
 var _tris : Array[DTriangle] = []
+var _bounding_points : Array[Vector2] = []
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -43,17 +44,47 @@ func _AddPoint(v : Vector2, tris : Array[DTriangle]) -> Array[DTriangle]:
 	
 	for tri : DTriangle in tris:
 		if tri.is_point_in_circum_circle(v):
+			tri.set_metadata(&"bad", true)
 			bad.append(tri)
 	
+	if bad.size() <= 0:
+		return tris
+	
+	var boundry : Array = []
 	var t : DTriangle = bad[0]
 	var e : DTriangle.Edge = DTriangle.Edge.V0V1
-	#while t != null:
-	#	pass
+	# Scan for all of the boundry edges
+	while t != null:
+		var t_op : DTriangle = t.get_neighbor_triangle(e)
+		if t_op == null or bad.find(t_op) < 0:
+			boundry.append({"edge": t.get_edge(e), "tri": t_op})
+			e = DTriangle.Next_Edge(e)
+			
+			if boundry[0].edge.is_connected_from(boundry[-1].edge):
+				t = null
+		else:
+			var ne : DTriangle.Edge = t_op.find_neighboring_edge(t)
+			e = DTriangle.Next_Edge(ne)
+			t = t_op
 	
-	#print("Out: ", tris.size(), "\n\n")
+	# Remove the bad triangles
+	tris = tris.filter(func(item : DTriangle):
+		return not item.has_metadata(&"bad")
+	)
+	
+	var tnew : Array[DTriangle] = []
+	for item : Dictionary in boundry:
+		var tri : DTriangle = DTriangle.new(v, item.edge.from, item.edge.to)
+		tris.append(tri)
+		if item.tri != null:
+			tri.store_if_neighbor(item.tri, true)
+		for ltri : DTriangle in tnew:
+			ltri.store_if_neighbor(tri, true)
+		tnew.append(tri)
+	
 	return tris
 
-func _GenInitialTriangles(points : Array[Vector2]) -> Array[DTriangle]:
+func _CalculatePointListBounds(points : Array[Vector2], buff_size : float = 0.0) -> Rect2:
 	var vmin : Vector2 = Vector2.INF
 	var vmax : Vector2 = -Vector2.INF
 	
@@ -63,20 +94,33 @@ func _GenInitialTriangles(points : Array[Vector2]) -> Array[DTriangle]:
 		vmax.x = max(vmax.x, point.x)
 		vmax.y = max(vmax.y, point.y)
 	
-	vmin -= Vector2(4.0, 4.0)
-	vmax += Vector2(4.0, 4.0)
+	vmin -= Vector2(buff_size, buff_size)
+	vmax += Vector2(buff_size, buff_size)
 	
-	var tris : Array[DTriangle] = []
-	tris.append(DTriangle.new(
+	return Rect2(vmin, vmax - vmin)
+	
+
+func _GenInitialTriangles(region : Rect2) -> Array[DTriangle]:
+	var vmin : Vector2 = region.position
+	var vmax : Vector2 = region.position + region.size
+	
+	_bounding_points = [
 		Vector2(vmax.x, vmin.y),
 		Vector2(vmin.x, vmin.y),
-		Vector2(vmin.x, vmax.y)
+		Vector2(vmin.x, vmax.y),
+		Vector2(vmax.x, vmax.y)
+	]
+	var tris : Array[DTriangle] = []
+	tris.append(DTriangle.new(
+		_bounding_points[0],
+		_bounding_points[1],
+		_bounding_points[2]
 	))
 	
 	tris.append(DTriangle.new(
-		Vector2(vmin.x, vmax.y),
-		Vector2(vmax.x, vmax.y),
-		Vector2(vmax.x, vmin.y)
+		_bounding_points[2],
+		_bounding_points[3],
+		_bounding_points[0]
 	))
 	
 	tris[0].store_if_neighbor(tris[1], true)
@@ -86,12 +130,26 @@ func _GenInitialTriangles(points : Array[Vector2]) -> Array[DTriangle]:
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
+func clear() -> void:
+	_bounding_points.clear()
+	_edges.clear()
+	_tris.clear()
+
 func generate(points : Array[Vector2]) -> void:
-	var tris : Array[DTriangle] = _GenInitialTriangles(points)
+	clear()
+	var region : Rect2 = _CalculatePointListBounds(points, 4.0)
+	var tris : Array[DTriangle] = _GenInitialTriangles(region)
 	
 	for point : Vector2 in points:
 		tris = _AddPoint(point, tris)
-	_tris = tris
+	
+	# Only keep the triangles that don't share a vertex with the initial bounding box.
+	_tris = tris.filter(func(item : DTriangle):
+		return not (item.point_matches_vertex(_bounding_points[0]) or \
+			item.point_matches_vertex(_bounding_points[1]) or \
+			item.point_matches_vertex(_bounding_points[2]) or \
+			item.point_matches_vertex(_bounding_points[3]))
+	)
 	
 	_edges.clear()
 	for tri : DTriangle in _tris:
@@ -102,6 +160,29 @@ func generate(points : Array[Vector2]) -> void:
 	#tris = tris.filter(func(tri : DTriangle):
 	#	return not tri.is_equal_approx(super_tri)
 	#)
+
+func start_generate(points : Array[Vector2]) -> void:
+	clear()
+	var region : Rect2 = _CalculatePointListBounds(points, 4.0)
+	_tris = _GenInitialTriangles(region)
+	#_tris = [
+		#DTriangle.Create_Containing_Triangle(points)
+	#]
+
+func end_generation() -> void:
+	if _tris.size() > 0 and _bounding_points.size() > 0:
+		# Only keep the triangles that don't share a vertex with the initial bounding box.
+		_tris = _tris.filter(func(item : DTriangle):
+			return not (item.point_matches_vertex(_bounding_points[0]) or \
+				item.point_matches_vertex(_bounding_points[1]) or \
+				item.point_matches_vertex(_bounding_points[2]) or \
+				item.point_matches_vertex(_bounding_points[3]))
+		)
+
+func add_point(point : Vector2) -> int:
+	if _tris.size() <= 0: return ERR_DOES_NOT_EXIST
+	_tris = _AddPoint(point, _tris)
+	return OK
 
 func get_edge_count() -> int:
 	return _edges.size()

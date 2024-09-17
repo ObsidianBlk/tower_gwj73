@@ -28,6 +28,9 @@ var _nv0v1 : WeakRef = weakref(null)
 var _nv1v2 : WeakRef = weakref(null)
 var _nv2v0 : WeakRef = weakref(null)
 
+# MetaData
+var _meta : Dictionary = {}
+
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
@@ -86,9 +89,9 @@ static func Create_Containing_Triangle(points : Array[Vector2]) -> DTriangle:
 	var dx : float = (vmax.x - vmin.x)
 	var dy : float = (vmax.y - vmin.y)
 	
-	var v0 : Vector2 = Vector2(vmin.x - dx, vmin.y - dy * 3)
+	var v0 : Vector2 = Vector2(vmin.x - dx, vmin.y - dy)
 	var v1 : Vector2 = Vector2(vmin.x - dx, vmax.y + dy)
-	var v2 : Vector2 = Vector2(vmax.x + dx * 3, vmax.y + dy)
+	var v2 : Vector2 = Vector2(vmax.x + dx, vmax.y + dy)
 	
 	return DTriangle.new(v0, v1, v2)
 
@@ -123,23 +126,27 @@ func get_edge(edge : Edge) -> DLine:
 			return DLine.new(v2, v0)
 	return null
 
+func does_edge_match(line : DLine, edge : Edge) -> bool:
+	var l : DLine = get_edge(edge)
+	return l.is_equal_approx(line)
 
-func do_edges_match(t : DTriangle, edge : Edge) -> bool:
+func is_edge_shared(t : DTriangle, edge : Edge) -> bool:
 	if t == null: return false
 	var line : DLine = get_edge(edge)
-	var tline : DLine = t.get_edge(edge)
-	return line.is_equal_approx(tline)
+	return t.does_edge_match(line, Edge.V0V1) or \
+		t.does_edge_match(line, Edge.V1V2) or \
+		t.does_edge_match(line, Edge.V2V0)
 
 func find_neighboring_edge(t : DTriangle) -> Edge:
-	if do_edges_match(t, Edge.V0V1):
+	if is_edge_shared(t, Edge.V0V1):
 		return Edge.V0V1
-	if do_edges_match(t, Edge.V1V2):
+	if is_edge_shared(t, Edge.V1V2):
 		return Edge.V1V2
-	if do_edges_match(t, Edge.V2V0):
+	if is_edge_shared(t, Edge.V2V0):
 		return Edge.V2V0
 	return Edge.NONE
 
-func get_neighbor(edge : Edge) -> DTriangle:
+func get_neighbor_triangle(edge : Edge) -> DTriangle:
 	match edge:
 		Edge.V0V1:
 			return _nv0v1.get_ref()
@@ -148,6 +155,16 @@ func get_neighbor(edge : Edge) -> DTriangle:
 		Edge.V2V0:
 			return _nv2v0.get_ref()
 	return null
+
+func has_neighbor(edge : Edge) -> bool:
+	match edge:
+		Edge.V0V1:
+			return _nv0v1.get_ref() != null
+		Edge.V1V2:
+			return _nv1v2.get_ref() != null
+		Edge.V2V0:
+			return _nv2v0.get_ref() != null
+	return false
 
 func store_if_neighbor(t : DTriangle, reciprical : bool = false) -> int:
 	var edge : Edge = find_neighboring_edge(t)
@@ -170,6 +187,21 @@ func point_matches_vertex(point : Vector2) -> bool:
 
 func any_shared_vertex(tri : DTriangle) -> bool:
 	return point_matches_vertex(tri.v0) or point_matches_vertex(tri.v1) or point_matches_vertex(tri.v2)
+
+func set_metadata(key : StringName, value : Variant) -> void:
+	_meta[key] = value
+
+func get_metadata(key : StringName, default : Variant = null) -> Variant:
+	if key in _meta:
+		return _meta[key]
+	return default
+
+func clear_metadata(key : StringName) -> void:
+	if key in _meta:
+		_meta.erase(key)
+
+func has_metadata(key : StringName) -> bool:
+	return key in _meta
 
 func as_string() -> String:
 	return "V0: %v\nV1: %v\nV2: %v\n\n"%[v0, v1, v2]

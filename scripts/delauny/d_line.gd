@@ -107,6 +107,9 @@ func is_connected_from(b : DLine) -> bool:
 func is_connected_to(b : DLine) -> bool:
 	return to.is_equal_approx(b.from)
 
+func connects_to(b : DLine) -> bool:
+	return is_connected_from(b) or is_connected_to(b)
+
 func as_string() -> String:
 	return "|%v - %v|"%[from, to]
 
