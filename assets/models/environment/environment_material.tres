@@ -4,8 +4,11 @@
 
 [resource]
 transparency = 2
-alpha_scissor_threshold = 0.5
+alpha_scissor_threshold = 0.033
 alpha_antialiasing_mode = 0
 depth_draw_mode = 1
+diffuse_mode = 2
+specular_mode = 1
 albedo_texture = ExtResource("1_rfbmh")
-texture_filter = 2
+texture_filter = 0
+texture_repeat = false

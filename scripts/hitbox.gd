@@ -1,9 +1,10 @@
-extends Actor
+extends Area3D
+class_name HitBox
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-
+signal hit_occured()
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
@@ -13,28 +14,40 @@ extends Actor
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-@export var camera : GimbleCamera = null
+@export var min_damage : int = 1
+@export var max_damage : int = 10
+@export var dpps : float = 0.0
 
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
+var _bodies : Dictionary = {}
 
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
-@onready var _weapon_manager: WeaponManager = $WeaponManager
+
 
 # ------------------------------------------------------------------------------
 # Setters / Getters
 # ------------------------------------------------------------------------------
 
+
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
-func _process(delta: float) -> void:
-	if camera != null:
-		if motion.length() > 0.01:
-			rotation.y = camera.rotation.y
+func _ready() -> void:
+	body_entered.connect(_on_body_entered)
+	body_exited.connect(_on_body_exited)
+
+
+func _physics_process(delta: float) -> void:
+	if _bodies.size() <= 0: return
+	var base_damage : int = randi_range(min_damage, max_damage)
+	var damage : int = min(1, floor(float(base_damage) * dpps * delta))
+	for body : Node3D in _bodies.values():
+		print("Zip zap to ", body.name)
+		pass # Damage this smuck as well!
 
 # ------------------------------------------------------------------------------
 # Private Methods
@@ -44,12 +57,21 @@ func _process(delta: float) -> void:
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func trigger(active : bool) -> void:
-	_weapon_manager.trigger(active)
 
-func activate_slot(idx : int) -> void:
-	_weapon_manager.activate_slot(idx)
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
+func _on_body_entered(body : Node3D) -> void:
+	if body.name in _bodies: return
+	if dpps > 0.0:
+		_bodies[body.name] = body
+	else:
+		print("Peeeew Peew to ", body.name)
+		hit_occured.emit()
+		pass # TODO: Hurt this smuck!
+
+
+func _on_body_exited(body : Node3D) -> void:
+	if body.name in _bodies:
+		_bodies.erase(body.name)

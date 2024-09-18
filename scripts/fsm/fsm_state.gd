@@ -1,9 +1,11 @@
-extends Actor
+extends Node
+class_name FSMState
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-
+signal state_change_requested(state_name : StringName, data : Dictionary)
+signal state_exited()
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
@@ -13,42 +15,58 @@ extends Actor
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-@export var camera : GimbleCamera = null
+
 
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
+var host : Node = null:			set=set_host
 
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
-@onready var _weapon_manager: WeaponManager = $WeaponManager
+
 
 # ------------------------------------------------------------------------------
 # Setters / Getters
 # ------------------------------------------------------------------------------
+func set_host(h : Node) -> void:
+	host = h
 
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
-func _process(delta: float) -> void:
-	if camera != null:
-		if motion.length() > 0.01:
-			rotation.y = camera.rotation.y
+
 
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+# "Virtual" Public Methods
+# ------------------------------------------------------------------------------
+func enter(_data : Dictionary = {}) -> void:
+	pass
+
+func exit() -> void:
+	var ex : Callable = func():
+		state_exited.emit()
+	ex.call_deferred()
+
+func handle_input(event : InputEvent) -> void:
+	pass
+
+func update(_delta : float) -> void:
+	pass
+
+func physics_update(_delta : float) -> void:
+	pass
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func trigger(active : bool) -> void:
-	_weapon_manager.trigger(active)
-
-func activate_slot(idx : int) -> void:
-	_weapon_manager.activate_slot(idx)
+func request_state_change(state_name : StringName, data : Dictionary = {}) -> void:
+	state_change_requested.emit(state_name, data)
 
 # ------------------------------------------------------------------------------
 # Handler Methods

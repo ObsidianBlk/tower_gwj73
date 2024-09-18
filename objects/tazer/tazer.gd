@@ -1,4 +1,4 @@
-extends Actor
+extends Weapon
 
 # ------------------------------------------------------------------------------
 # Signals
@@ -8,47 +8,58 @@ extends Actor
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
-
+const ANIM_ZAP : StringName = &"zap"
+const ANIM_OFF : StringName = &"off"
 
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-@export var camera : GimbleCamera = null
+
 
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
 
+
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
-@onready var _weapon_manager: WeaponManager = $WeaponManager
+@onready var _hit_box: HitBox = $HitBox
+@onready var _anim: AnimationPlayer = $Anim
+
 
 # ------------------------------------------------------------------------------
 # Setters / Getters
 # ------------------------------------------------------------------------------
+func set_active(activate : bool) -> void:
+	super.set_active(activate)
+	_UpdateActiveState()
 
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
-func _process(delta: float) -> void:
-	if camera != null:
-		if motion.length() > 0.01:
-			rotation.y = camera.rotation.y
+
 
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
+func _UpdateActiveState() -> void:
+	_hit_box.monitoring = active
+	if active:
+		_PlayAnim(ANIM_ZAP)
+	else:
+		_PlayAnim(ANIM_OFF)
 
+
+func _PlayAnim(anim_name : StringName) -> void:
+	if _anim != null:
+		_anim.play(anim_name)
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func trigger(active : bool) -> void:
-	_weapon_manager.trigger(active)
 
-func activate_slot(idx : int) -> void:
-	_weapon_manager.activate_slot(idx)
+
 
 # ------------------------------------------------------------------------------
 # Handler Methods

@@ -16,7 +16,7 @@ signal generation_completed()
 # ------------------------------------------------------------------------------
 
 const MNX_MAP_RADIUS : Vector2 = Vector2(60.0, 100.0)
-const MNX_ROOM_COUNT : Vector2i = Vector2i(20, 80)
+const MNX_ROOM_COUNT : Vector2i = Vector2i(10, 40)
 const MNX_ROOM_WIDTH : Vector2i = Vector2i(10, 64)
 const MNX_ROOM_HEIGHT : Vector2i = Vector2i(10, 64)
 

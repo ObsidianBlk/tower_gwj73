@@ -1,11 +1,16 @@
-[gd_scene load_steps=37 format=3 uid="uid://dhbt3fprhsiqj"]
+[gd_scene load_steps=42 format=3 uid="uid://dhbt3fprhsiqj"]
 
 [ext_resource type="Script" path="res://objects/player/player.gd" id="1_pn4ps"]
 [ext_resource type="Texture2D" uid="uid://coxdfmgp4u0gb" path="res://assets/graphics/main_character/idle_fore.png" id="1_q8xk2"]
 [ext_resource type="Texture2D" uid="uid://byyu110aejuq3" path="res://assets/graphics/main_character/run_fore.png" id="2_3vdow"]
+[ext_resource type="Script" path="res://scripts/fsm/fsm.gd" id="2_oyhk7"]
 [ext_resource type="Script" path="res://scripts/asprite_unified_player_3d.gd" id="3_p7v3u"]
+[ext_resource type="Script" path="res://objects/player/states/state_idle.gd" id="3_pbtle"]
 [ext_resource type="Texture2D" uid="uid://68e1vr5wyawd" path="res://assets/graphics/main_character/idle_aft.png" id="3_ry40h"]
 [ext_resource type="Texture2D" uid="uid://d2urrqjefu2pm" path="res://assets/graphics/main_character/run_aft.png" id="4_8tfgp"]
+[ext_resource type="Script" path="res://objects/player/state_move.gd" id="4_u6bhm"]
+[ext_resource type="Script" path="res://scripts/weapon_manager.gd" id="5_ttit7"]
+[ext_resource type="PackedScene" uid="uid://b162n71roit8" path="res://objects/tazer/tazer.tscn" id="6_knh57"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wi0ay"]
 radius = 0.4
@@ -251,9 +256,29 @@ collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_pn4ps")
 
+[node name="FSM" type="Node" parent="." node_paths=PackedStringArray("host")]
+script = ExtResource("2_oyhk7")
+host = NodePath("..")
+initial_state = &"Idle"
+
+[node name="Idle" type="Node" parent="FSM" node_paths=PackedStringArray("unified_player")]
+script = ExtResource("3_pbtle")
+unified_player = NodePath("../../ASpriteUnifiedPlayer3D")
+
+[node name="Move" type="Node" parent="FSM" node_paths=PackedStringArray("unified_player")]
+script = ExtResource("4_u6bhm")
+unified_player = NodePath("../../ASpriteUnifiedPlayer3D")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_wi0ay")
+
+[node name="WeaponManager" type="Node3D" parent="." node_paths=PackedStringArray("slot_1")]
+script = ExtResource("5_ttit7")
+slot_1 = NodePath("Tazer")
+
+[node name="Tazer" parent="WeaponManager" instance=ExtResource("6_knh57")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -0.25)
 
 [node name="ASpriteUnifiedPlayer3D" type="Node3D" parent="."]
 script = ExtResource("3_p7v3u")

@@ -52,7 +52,7 @@ const ZOOM_RATE : float = 10.0
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-var _mouse_sensitivity : Vector2 = Vector2(0.025, 0.025)
+var _mouse_sensitivity : Vector2 = Vector2(0.01, 0.01)
 var _look : Vector2 = Vector2.ZERO
 var _zoom : float = 0.0
 
