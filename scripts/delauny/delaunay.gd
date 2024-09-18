@@ -137,7 +137,7 @@ func clear() -> void:
 
 func generate(points : Array[Vector2]) -> void:
 	clear()
-	var region : Rect2 = _CalculatePointListBounds(points, 4.0)
+	var region : Rect2 = _CalculatePointListBounds(points, 10.0)
 	var tris : Array[DTriangle] = _GenInitialTriangles(region)
 	
 	for point : Vector2 in points:
@@ -151,7 +151,6 @@ func generate(points : Array[Vector2]) -> void:
 			item.point_matches_vertex(_bounding_points[3]))
 	)
 	
-	_edges.clear()
 	for tri : DTriangle in _tris:
 		_edges = _StoreEdge(DLine.new(tri.v0, tri.v1), _edges)
 		_edges = _StoreEdge(DLine.new(tri.v1, tri.v2), _edges)
@@ -163,7 +162,7 @@ func generate(points : Array[Vector2]) -> void:
 
 func start_generate(points : Array[Vector2]) -> void:
 	clear()
-	var region : Rect2 = _CalculatePointListBounds(points, 4.0)
+	var region : Rect2 = _CalculatePointListBounds(points, 10.0)
 	_tris = _GenInitialTriangles(region)
 	#_tris = [
 		#DTriangle.Create_Containing_Triangle(points)
@@ -178,6 +177,11 @@ func end_generation() -> void:
 				item.point_matches_vertex(_bounding_points[2]) or \
 				item.point_matches_vertex(_bounding_points[3]))
 		)
+		
+		for tri : DTriangle in _tris:
+			_edges = _StoreEdge(DLine.new(tri.v0, tri.v1), _edges)
+			_edges = _StoreEdge(DLine.new(tri.v1, tri.v2), _edges)
+			_edges = _StoreEdge(DLine.new(tri.v2, tri.v0), _edges)
 
 func add_point(point : Vector2) -> int:
 	if _tris.size() <= 0: return ERR_DOES_NOT_EXIST

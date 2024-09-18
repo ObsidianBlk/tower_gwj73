@@ -19,9 +19,17 @@ grow_horizontal = 2
 [node name="SeedField" type="VBoxContainer" parent="ViewerUI/HBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="ViewerUI/HBoxContainer/SeedField"]
+[node name="SeedLabel" type="HBoxContainer" parent="ViewerUI/HBoxContainer/SeedField"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ViewerUI/HBoxContainer/SeedField/SeedLabel"]
 layout_mode = 2
 text = "Seed:"
+
+[node name="LBL_Seed" type="Label" parent="ViewerUI/HBoxContainer/SeedField/SeedLabel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0"
 
 [node name="SLIDER_Seed" type="HSlider" parent="ViewerUI/HBoxContainer/SeedField"]
 unique_name_in_owner = true

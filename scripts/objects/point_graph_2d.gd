@@ -44,6 +44,65 @@ func _FindOrAddPointIndex(point : Vector2) -> int:
 		points.append(point)
 	return idx
 
+func _FindEdgesFromPointIndex(pidx : int) -> Array[Vector2i]:
+	var arr : Array[Vector2i] = []
+	arr.assign(edges.keys().filter(func(eidx : Vector2i):
+		return eidx.x == pidx or eidx.y == pidx
+	))
+	return arr
+
+func _BuildPathTo(idx : int, to_idx : int, visited : Array[int]) -> Array[Vector2]:
+	var vto : Vector2 = points[to_idx]
+	
+	var edges : Array[Vector2i] = _FindEdgesFromPointIndex(idx)
+	var process : bool = true
+	
+	while process:
+		var nidx : int = -1
+		var ndist : float = INF
+		for edge : Vector2i in edges:
+			var cidx : int = edge.x if edge.x != idx else edge.y
+			if cidx == to_idx: # We found out destination!
+				return [vto, points[idx]]
+			if visited.find(cidx) < 0: # If point not visited...
+				var dist : float = points[cidx].distance_to(vto)
+				if dist < ndist:
+					ndist = dist
+					nidx = cidx
+		
+		if nidx >= 0:
+			visited.append(nidx)
+			var res : Array[Vector2] = _BuildPathTo(nidx, to_idx, visited)
+			if not res.is_empty():
+				res.append(points[idx])
+				return res
+		else:
+			process = false
+	return []
+
+func _BuildMST(pidx : int, s : DisjSet, elist : Array[Vector2i]) -> Array[Vector2i]:
+	var el : Array[Vector2i] = _FindEdgesFromPointIndex(pidx)
+	var process : bool = true
+	
+	while process:
+		var nidx : int = -1
+		var ndist : float = INF
+		for eidx : Vector2i in el:
+			var idx : int = eidx.x if eidx.x != pidx else eidx.y
+			if s.find(idx) != s.find(pidx):
+				var dist : float = points[idx].distance_to(points[pidx])
+				if dist < ndist:
+					dist = ndist
+					nidx = idx
+		if nidx >= 0:
+			s.union(nidx, pidx)
+			elist.append(Vector2i(min(pidx, nidx), max(pidx, nidx)))
+			_BuildMST(nidx, s, elist)
+		else:
+			process = false
+		
+	return elist
+
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
@@ -53,8 +112,21 @@ func count_points() -> int:
 func count_edges() -> int:
 	return edges.size()
 
+func get_point(idx : int) -> Vector2:
+	if idx >= 0 and idx < points.size():
+		return points[idx]
+	return Vector2.INF
+
 func get_point_index(point : Vector2) -> int:
 	return _FindPointIndex(point)
+
+func has_edge(from : Vector2, to : Vector2) -> bool:
+	var fidx : int = _FindPointIndex(from)
+	var tidx : int = _FindPointIndex(to)
+	if fidx < 0 or tidx < 0: return false
+	
+	var eidx : Vector2i = Vector2i(min(fidx, tidx), max(fidx, tidx))
+	return eidx in edges
 
 func add_edge(from : Vector2, to : Vector2, weight : float = 1.0) -> int:
 	if from.is_equal_approx(to): return ERR_LINK_FAILED
@@ -98,10 +170,7 @@ func get_edges() -> Array[Dictionary]:
 func get_edges_at_point(point : Vector2) -> Array[Vector2i]:
 	var idx : int = _FindPointIndex(point)
 	if idx < 0: return []
-	
-	return edges.keys().filter(func(eidx : Vector2i):
-		return eidx.x == idx or eidx.y == idx
-	)
+	return _FindEdgesFromPointIndex(idx)
 
 func get_edge_weight(eidx : Vector2i) -> float:
 	if eidx in edges:
@@ -126,6 +195,36 @@ func get_connected_points(point : Vector2) -> Array[Vector2]:
 		elif eidx.y != pidx:
 			plist.append(points[eidx.y])
 	return plist
+
+func get_path_between(from : Vector2, to : Vector2) -> Array[Vector2]:
+	var path : Array[Vector2] = []
+	
+	var fidx : int = _FindPointIndex(from)
+	var tidx : int = _FindPointIndex(to)
+	
+	# If one or both points are missing, exit
+	if fidx < 0 or tidx < 0: return []
+	# If both points are the same, the path is a single point.
+	if fidx == tidx: return [from]
+	
+	# If we have an edge between both points, then they're the path!
+	if has_edge(from, to):
+		return [from, to]
+	
+	var visited : Array[int] = [fidx]
+	return _BuildPathTo(fidx, tidx, visited)
+	
+	return path
+
+func get_minimum_spanning_tree(from : Vector2) -> Array[Vector2i]:
+	var fidx : int = _FindPointIndex(from)
+	if fidx < 0: return []
+	
+	var s : DisjSet = DisjSet.new(points.size())
+	var elist : Array[Vector2i] = []
+	elist = _BuildMST(fidx, s, elist)
+	return elist
+
 
 # ------------------------------------------------------------------------------
 # Handler Methods
