@@ -41,7 +41,6 @@ func _draw() -> void:
 	for idx : int in _map.get_room_count():
 		var r : Rect2 = _map.get_room_rect(idx)
 		if r.size.x <= 0.0: continue
-		r.position -= r.size * 0.5
 		draw_rect(r, COLOR_ROOM, true)
 		draw_rect(r, COLOR_ROOM_WALLS, false, ROOM_WALL_WIDTH)
 	
@@ -52,26 +51,27 @@ func _draw() -> void:
 		#Vector2(-tsize, -tsize)
 	#)
 	
-	var d : Delaunay = _map.get_delaunay()
-	if d != null:
-		for idx : int in range(d.get_triangle_count()):
-			var tri : DTriangle = d.get_triangle(idx)
-			_DrawTriangle(tri, Color.AQUA)
-	
-	var g : PointGraph2D = _map.get_graph()
-	if g != null:
-		var edges : Array[Dictionary] = g.get_edges()
-		for einfo : Dictionary in edges:
-			draw_line(einfo.a, einfo.b, Color.CHARTREUSE, 1.0, true)
+	var hw : Array[Dictionary] = _map.get_hallways()
+	if hw.size() > 0:
+		for info : Dictionary in hw:
+			draw_line(info.s, info.e, Color.BLUE, 1.1, true)
+	else:
+		var d : Delaunay = _map.get_delaunay()
+		if d != null:
+			for idx : int in range(d.get_triangle_count()):
+				var tri : DTriangle = d.get_triangle(idx)
+				_DrawTriangle(tri, Color.AQUA)
 		
-		var mst : Array[Vector2i] = _map.get_room_mst()
-		for e : Vector2i in mst:
-			draw_line(g.points[e.x], g.points[e.y], Color.RED, 1.1, true)
-	
-	#var p : Array[Vector2] = _map.get_room_path()
-	#if p.size() > 0:
-		#for idx : int in range(1, p.size(), 1):
-			#draw_line(p[idx-1], p[idx], Color.RED, 1.1, true)
+		var g : PointGraph2D = _map.get_graph()
+		if g != null:
+			var edges : Array[Dictionary] = g.get_edges()
+			for einfo : Dictionary in edges:
+				draw_line(einfo.a, einfo.b, Color.CHARTREUSE, 1.0, true)
+			
+			var mst : Array[Vector2i] = _map.get_room_mst()
+			for e : Vector2i in mst:
+				draw_line(g.points[e.x], g.points[e.y], Color.RED, 1.1, true)
+
 
 func _physics_process(delta: float) -> void:
 	if _new_step:
