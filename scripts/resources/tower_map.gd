@@ -16,7 +16,7 @@ signal generation_completed()
 # ------------------------------------------------------------------------------
 
 const MNX_MAP_RADIUS : Vector2 = Vector2(60.0, 100.0)
-const MNX_ROOM_COUNT : Vector2i = Vector2i(10, 40)
+const MNX_ROOM_COUNT : Vector2i = Vector2i(4, 12)
 const MNX_ROOM_WIDTH : Vector2i = Vector2i(10, 64)
 const MNX_ROOM_HEIGHT : Vector2i = Vector2i(10, 64)
 
@@ -104,7 +104,7 @@ func _PushRooms() -> int:
 			var npos : Vector2 = _rooms[nidx].p
 			
 			var vdir : Vector2 = cpos - npos
-			if vdir.length() < cradius + nradius:
+			if vdir.length() < cradius + nradius + 6:
 				var shift : Vector2 = vdir.normalized()
 				if not "n" in _rooms[cidx]:
 					_rooms[cidx]["n"] = 0
@@ -182,11 +182,19 @@ func _IsPointInRoom(point : Vector2) -> bool:
 	return false
 
 func _FindOverlap(r1s : float, r1e : float, r2s : float, r2e : float) -> Dictionary:
+	if r1s > r2s: # Make sure these are in the correct order
+		var rs : float = r1s
+		var re : float = r1e
+		r1s = r2s
+		r1e = r2e
+		r2s = rs
+		r2e = re
+	
 	var s : float = max(r1s, r2s)
 	var e : float = min(r1e, r2e)
 	
-	if abs(s - e) > 0.001:
-		if r1s < s and r2s < s and r1e > e and r2e > e:
+	if e > s and abs(s - e) > 0.001:
+		if (s >= r1s and s <= r1e) and (e >= r2s and e <= r2e):
 			return {"s":s, "e":e}
 	return {}
 
