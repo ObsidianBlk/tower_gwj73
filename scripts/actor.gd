@@ -26,6 +26,8 @@ class_name Actor
 # ------------------------------------------------------------------------------
 var _gravity : float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+var _meta : Dictionary = {}
+
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
@@ -57,6 +59,22 @@ func _physics_process(delta: float) -> void:
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
+func clear_metadata(key : StringName) -> void:
+	_meta.erase(key)
+
+func clear_all_metadata() -> void:
+	_meta.clear()
+
+func has_metadata(key : StringName) -> bool:
+	return key in _meta
+
+func set_metadata(key : StringName, value : Variant) -> void:
+	_meta[key] = value
+
+func get_metadata(key : StringName, default : Variant = null) -> Variant:
+	if key in _meta:
+		return _meta[key]
+	return default
 
 # ------------------------------------------------------------------------------
 # Handler Methods

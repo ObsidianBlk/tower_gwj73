@@ -16,6 +16,10 @@ run/main_scene="res://scenes/main/main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
+[global_group]
+
+Player="Identified as a Player actor"
+
 [input]
 
 look_up={

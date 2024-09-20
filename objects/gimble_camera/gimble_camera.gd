@@ -144,7 +144,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if InputUtils.Event_Is_Action(event, [&"look_up", &"look_down"]):
 			_look.y = Input.get_axis(&"look_down", &"look_up")
 		if InputUtils.Event_Is_Action(event, [&"look_left", &"look_right"]):
-			_look.x = Input.get_axis(&"look_left", &"look_right")
+			_look.x = Input.get_axis(&"look_right", &"look_left")
 		if InputUtils.Event_Is_Action(event, [&"zoom_in", &"zoom_out"]):
 			_zoom = Input.get_axis(&"zoom_in", &"zoom_out")
 

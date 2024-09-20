@@ -1,26 +1,27 @@
-extends Node
-class_name FSMState
+extends FSMState
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-signal state_change_requested(state_name : StringName, data : Dictionary)
-signal state_exited()
+
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
+const META_KEY_TARGET_NODE : StringName = &"target_node"
 
+const ANIM_IDLE : StringName = &"idle"
 
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-
+@export var vision_area : VisionArea3D = null
+@export var unified_player : ASpriteUnifiedPlayer3D = null
 
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-var host : Node = null:			set=set_host
+
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -30,8 +31,7 @@ var host : Node = null:			set=set_host
 # ------------------------------------------------------------------------------
 # Setters / Getters
 # ------------------------------------------------------------------------------
-func set_host(h : Node) -> void:
-	host = h
+
 
 # ------------------------------------------------------------------------------
 # Override Methods
@@ -42,33 +42,43 @@ func set_host(h : Node) -> void:
 # Private Methods
 # ------------------------------------------------------------------------------
 
+
 # ------------------------------------------------------------------------------
 # "Virtual" Public Methods
 # ------------------------------------------------------------------------------
 func enter(_data : Dictionary = {}) -> void:
-	pass
+	if vision_area != null:
+		if not vision_area.target_detected.is_connected(_on_vision_target_detected):
+			vision_area.target_detected.connect(_on_vision_target_detected)
+		if not vision_area.target_lost.is_connected(_on_vision_target_lost):
+			vision_area.target_lost.connect(_on_vision_target_lost)
+	
+	if unified_player != null:
+		unified_player.play(ANIM_IDLE)
 
 func exit() -> void:
-	state_exited.emit()
-
-func handle_input(event : InputEvent) -> void:
-	pass
+	if vision_area != null:
+		if vision_area.target_detected.is_connected(_on_vision_target_detected):
+			vision_area.target_detected.disconnect(_on_vision_target_detected)
+		if vision_area.target_lost.is_connected(_on_vision_target_lost):
+			vision_area.target_lost.disconnect(_on_vision_target_lost)
+	super.exit()
 
 func update(_delta : float) -> void:
-	pass
-
-func physics_update(_delta : float) -> void:
-	pass
-
-# ------------------------------------------------------------------------------
-# Public Methods
-# ------------------------------------------------------------------------------
-func request_exit() -> void:
-	exit.call_deferred()
-
-func request_state_change(state_name : StringName, data : Dictionary = {}) -> void:
-	state_change_requested.emit(state_name, data)
+	if host == null: return
+	var target : Node3D = host.get_metadata(META_KEY_TARGET_NODE)
+	if target == null: return
+	
+	host.look_at(target.global_position)
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
+func _on_vision_target_detected(body : Node3D) -> void:
+	if host == null: return
+	if not host.has_metadata(META_KEY_TARGET_NODE):
+		host.set_metadata(META_KEY_TARGET_NODE, body)
+
+func _on_vision_target_lost() -> void:
+	if host == null: return
+	host.clear_metadata(META_KEY_TARGET_NODE)

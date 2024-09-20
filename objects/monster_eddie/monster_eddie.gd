@@ -1,11 +1,9 @@
-extends Node
-class_name FSMState
+extends Actor
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-signal state_change_requested(state_name : StringName, data : Dictionary)
-signal state_exited()
+
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
@@ -20,7 +18,7 @@ signal state_exited()
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-var host : Node = null:			set=set_host
+
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -30,8 +28,7 @@ var host : Node = null:			set=set_host
 # ------------------------------------------------------------------------------
 # Setters / Getters
 # ------------------------------------------------------------------------------
-func set_host(h : Node) -> void:
-	host = h
+
 
 # ------------------------------------------------------------------------------
 # Override Methods
@@ -42,32 +39,11 @@ func set_host(h : Node) -> void:
 # Private Methods
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-# "Virtual" Public Methods
-# ------------------------------------------------------------------------------
-func enter(_data : Dictionary = {}) -> void:
-	pass
-
-func exit() -> void:
-	state_exited.emit()
-
-func handle_input(event : InputEvent) -> void:
-	pass
-
-func update(_delta : float) -> void:
-	pass
-
-func physics_update(_delta : float) -> void:
-	pass
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func request_exit() -> void:
-	exit.call_deferred()
 
-func request_state_change(state_name : StringName, data : Dictionary = {}) -> void:
-	state_change_requested.emit(state_name, data)
 
 # ------------------------------------------------------------------------------
 # Handler Methods

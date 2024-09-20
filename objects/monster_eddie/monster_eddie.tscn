@@ -1,0 +1,86 @@
+[gd_scene load_steps=12 format=3 uid="uid://1y10xtqkri2j"]
+
+[ext_resource type="Script" path="res://objects/monster_eddie/monster_eddie.gd" id="1_2pdrk"]
+[ext_resource type="Script" path="res://scripts/asprite_unified_player_3d.gd" id="1_kkmaf"]
+[ext_resource type="Texture2D" uid="uid://cnuwihp0orruv" path="res://assets/graphics/monster_01/fore_blink.png" id="2_d3iqa"]
+[ext_resource type="Script" path="res://scripts/fsm/fsm.gd" id="2_rlsup"]
+[ext_resource type="Texture2D" uid="uid://hjuudw7htkr4" path="res://assets/graphics/monster_01/aft.png" id="3_empff"]
+[ext_resource type="Script" path="res://objects/monster_eddie/states/state_idle.gd" id="3_mnpe6"]
+[ext_resource type="Script" path="res://scripts/vision_area_3d.gd" id="6_2lgkx"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_w5ai7"]
+radius = 1.0
+height = 3.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0qgm1"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_u7qmm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0qgm1")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ik5vq"]
+radius = 10.0
+
+[node name="MonsterEddie" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_2pdrk")
+
+[node name="NavAgent" type="NavigationAgent3D" parent="."]
+
+[node name="FSM" type="Node" parent="." node_paths=PackedStringArray("host")]
+script = ExtResource("2_rlsup")
+host = NodePath("..")
+initial_state = &"Idle"
+
+[node name="Idle" type="Node" parent="FSM" node_paths=PackedStringArray("vision_area", "unified_player")]
+script = ExtResource("3_mnpe6")
+vision_area = NodePath("../../VisionArea3D")
+unified_player = NodePath("../../ASUP")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("CapsuleShape3D_w5ai7")
+
+[node name="ASUP" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = ExtResource("1_kkmaf")
+
+[node name="AS_Fore" type="AnimatedSprite3D" parent="ASUP"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+pixel_size = 0.125
+double_sided = false
+texture_filter = 0
+sprite_frames = SubResource("SpriteFrames_u7qmm")
+animation = &"idle"
+
+[node name="SpriteAft" type="Sprite3D" parent="ASUP"]
+pixel_size = 0.125
+double_sided = false
+texture_filter = 0
+texture = ExtResource("3_empff")
+
+[node name="VisionArea3D" type="Area3D" parent="." node_paths=PackedStringArray("line_of_sight")]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("6_2lgkx")
+target_group = &"Player"
+line_of_sight = NodePath("LOSRay")
+ray_offset = Vector3(0, 1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="VisionArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CylinderShape3D_ik5vq")
+
+[node name="LOSRay" type="RayCast3D" parent="VisionArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.99978, 0)
+collision_mask = 3

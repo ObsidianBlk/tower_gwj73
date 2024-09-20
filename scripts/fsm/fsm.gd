@@ -74,7 +74,7 @@ func change_state(state_name : StringName, data : Dictionary = {}) -> void:
 	if not state_name in _states: return
 	if _active_state != null:
 		if _active_state.name == state_name: return
-		_active_state.exit()
+		_active_state.request_exit()
 		await _active_state.state_exited
 		_active_state = null
 	
