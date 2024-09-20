@@ -13,6 +13,15 @@ signal zoom_changed(z : float)
 # ------------------------------------------------------------------------------
 const FLOAT_THRESHOLD : float = 0.001
 
+const SETTINGS_SECTION_GAMEPLAY : String = "GAMEPLAY"
+const SETTINGS_KEY_MSENS_X : String = "mouse_sens_x"
+const SETTINGS_KEY_MSENS_Y : String = "mouse_sens_y"
+const SETTINGS_KEY_INVERT_X : String = "mouse_invert_x"
+const SETTINGS_KEY_INVERT_Y : String = "mouse_invert_y"
+
+const MIN_MOUSE_SENSE : float = 0.001
+const MAX_MOUSE_SENSE : float = 0.02
+
 #const MIN_PITCH_ANGLE : float = -1.570796
 #const MAX_PITCH_ANGLE : float = 1.570796
 
@@ -53,6 +62,9 @@ const ZOOM_RATE : float = 10.0
 # Variables
 # ------------------------------------------------------------------------------
 var _mouse_sensitivity : Vector2 = Vector2(0.01, 0.01)
+var _invert_x : bool = false
+var _invert_y : bool = false
+
 var _look : Vector2 = Vector2.ZERO
 var _zoom : float = 0.0
 
@@ -133,13 +145,19 @@ func set_clip_collision_mask(ccm : int) -> void:
 # Override Methods
 # ------------------------------------------------------------------------------
 func _ready() -> void:
+	Settings.value_changed.connect(_on_settings_value_changed)
+	_UpdateFromSettings()
 	_UpdateCameraProperties()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if input_on_captured_only and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
 	
 	if event is InputEventMouseMotion:
-		_UpdateRotations(event.relative * _mouse_sensitivity)
+		var inv : Vector2 = Vector2(
+			-1.0 if _invert_x else 1.0,
+			-1.0 if _invert_y else 1.0
+		)
+		_UpdateRotations(event.relative * inv * _mouse_sensitivity)
 	else:
 		if InputUtils.Event_Is_Action(event, [&"look_up", &"look_down"]):
 			_look.y = Input.get_axis(&"look_down", &"look_up")
@@ -149,6 +167,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			_zoom = Input.get_axis(&"zoom_in", &"zoom_out")
 
 func _process(delta: float) -> void:
+	if get_tree().paused: return
 	_UpdateRotations(Vector2(
 		(_look.x * YAW_ANGLE * delta),
 		(_look.y * PITCH_ANGLE * delta)
@@ -159,6 +178,7 @@ func _process(delta: float) -> void:
 		global_position = _CalculateFollowPosition(global_position, target.global_position, delta)
 
 func _physics_process(delta: float) -> void:
+	if get_tree().paused: return
 	if _clip_cast == null or _camera == null: return
 	var desired_camera_pos : Vector3 = Vector3(relative_offset.x, 0.0, _target_zoom)
 	if not _clip_cast.target_position.is_equal_approx(desired_camera_pos):
@@ -180,6 +200,17 @@ func _physics_process(delta: float) -> void:
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
+func _UpdateFromSettings() -> void:
+	var msr : float = MAX_MOUSE_SENSE - MIN_MOUSE_SENSE
+	var msx : float = Settings.get_value(SETTINGS_SECTION_GAMEPLAY, SETTINGS_KEY_MSENS_X, 0.5)
+	var msy : float = Settings.get_value(SETTINGS_SECTION_GAMEPLAY, SETTINGS_KEY_MSENS_Y, 0.5)
+	_mouse_sensitivity = Vector2(
+		clamp(MIN_MOUSE_SENSE + (msr * msx), MIN_MOUSE_SENSE, MAX_MOUSE_SENSE),
+		clamp(MIN_MOUSE_SENSE + (msr * msy), MIN_MOUSE_SENSE, MAX_MOUSE_SENSE)
+	)
+	_invert_x = Settings.get_value(SETTINGS_SECTION_GAMEPLAY, SETTINGS_KEY_INVERT_X, false)
+	_invert_y = Settings.get_value(SETTINGS_SECTION_GAMEPLAY, SETTINGS_KEY_INVERT_Y, false)
+
 func _CalculateFollowPosition(fposition : Vector3, tposition : Vector3, delta : float) -> Vector3:
 	var final_position : Vector3 = tposition # Assume we snap to the target position
 	# If we have no follow_speed, just snap to the target position... which, we already assumed.
@@ -237,3 +268,20 @@ func _UpdateCameraProperties() -> void:
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
+func _on_settings_value_changed(section : String, key : String, value : Variant) -> void:
+	if section != SETTINGS_SECTION_GAMEPLAY: return
+	match key:
+		SETTINGS_KEY_MSENS_X:
+			if typeof(value) == TYPE_FLOAT:
+				var msr : float = MAX_MOUSE_SENSE - MIN_MOUSE_SENSE
+				_mouse_sensitivity.x = clamp(MIN_MOUSE_SENSE + (value * msr), MIN_MOUSE_SENSE, MAX_MOUSE_SENSE)
+		SETTINGS_KEY_MSENS_Y:
+			if typeof(value) == TYPE_FLOAT:
+				var msr : float = MAX_MOUSE_SENSE - MIN_MOUSE_SENSE
+				_mouse_sensitivity.x = clamp(MIN_MOUSE_SENSE + (value * msr), MIN_MOUSE_SENSE, MAX_MOUSE_SENSE)
+		SETTINGS_KEY_INVERT_X:
+			if typeof(value) == TYPE_BOOL:
+				_invert_x = value
+		SETTINGS_KEY_INVERT_Y:
+			if typeof(value) == TYPE_BOOL:
+				_invert_y = value

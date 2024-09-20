@@ -1,9 +1,69 @@
-[gd_scene format=3 uid="uid://jtf0a06v8682"]
+[gd_scene load_steps=6 format=3 uid="uid://jtf0a06v8682"]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_layer.gd" id="1_3sdi5"]
+[ext_resource type="Script" path="res://scenes/main/main.gd" id="1_cwm12"]
+[ext_resource type="PackedScene" uid="uid://c5po6g7c75ygs" path="res://scenes/ui/main_menu/main_menu.tscn" id="2_sx3pk"]
+[ext_resource type="PackedScene" uid="uid://dbma3d61ptios" path="res://scenes/ui/pause_menu/pause_menu.tscn" id="4_a56cs"]
+[ext_resource type="PackedScene" uid="uid://cajnnliiu7t1y" path="res://scenes/ui/options_menu/options_menu.tscn" id="5_s5vwa"]
 
 [node name="Main" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_cwm12")
+
+[node name="Screen" type="CanvasLayer" parent="."]
+
+[node name="VLayout" type="VBoxContainer" parent="Screen"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spacer" type="Control" parent="Screen/VLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HLayout" type="HBoxContainer" parent="Screen/VLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacer" type="Control" parent="Screen/VLayout/HLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScreenViewCon" type="SubViewportContainer" parent="Screen/VLayout/HLayout"]
+layout_mode = 2
+
+[node name="ScreenView" type="SubViewport" parent="Screen/VLayout/HLayout/ScreenViewCon"]
+unique_name_in_owner = true
+process_mode = 1
+handle_input_locally = false
+size = Vector2i(800, 600)
+render_target_update_mode = 4
+
+[node name="Spacer2" type="Control" parent="Screen/VLayout/HLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacer2" type="Control" parent="Screen/VLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("1_3sdi5")
+initial_ui = &"MainMenu"
+default_ui = &"MainMenu"
+
+[node name="MainMenu" parent="UI" instance=ExtResource("2_sx3pk")]
+options_menu = &"OptionsMenu"
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("4_a56cs")]
+options_menu = &"OptionsMenu"
+
+[node name="OptionsMenu" parent="UI" instance=ExtResource("5_s5vwa")]

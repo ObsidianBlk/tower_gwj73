@@ -52,7 +52,9 @@ use_collision = true
 size = Vector3(20, 3, 0.25)
 
 [node name="GimbleCamera" parent="." node_paths=PackedStringArray("target") instance=ExtResource("3_ok6r4")]
+process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+current = true
 relative_offset = Vector2(0, 1.6)
 min_pitch_angle = -80.0
 max_pitch_angle = 45.0

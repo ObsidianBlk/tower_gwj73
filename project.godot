@@ -16,6 +16,14 @@ run/main_scene="res://scenes/main/main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Settings="*res://scripts/autos/settings.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/OBSControlLibrary/plugin.cfg")
+
 [global_group]
 
 Player="Identified as a Player actor"

@@ -1,0 +1,203 @@
+[gd_scene load_steps=4 format=3 uid="uid://cajnnliiu7t1y"]
+
+[ext_resource type="Script" path="res://addons/OBSControlLibrary/SlideoutContainer/slide_out_container.gd" id="1_1bf36"]
+[ext_resource type="Script" path="res://scenes/ui/options_menu/options_menu.gd" id="1_jc81a"]
+[ext_resource type="ButtonGroup" uid="uid://ypgvavonwxrm" path="res://scenes/ui/options_menu/opsecs_btn_group.tres" id="2_nrln1"]
+
+[node name="OptionsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jc81a")
+
+[node name="SectionControls" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 2
+theme_override_constants/margin_left = 64
+
+[node name="SlideSecOps" type="Container" parent="SectionControls"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_1bf36")
+slide_edge = 3
+slide_duration = 0.8
+transition_type = 7
+ease_type = 2
+
+[node name="VLayout" type="VBoxContainer" parent="SectionControls/SlideSecOps"]
+layout_mode = 2
+theme_override_constants/separation = 35
+
+[node name="VBTNLayout" type="VBoxContainer" parent="SectionControls/SlideSecOps/VLayout"]
+layout_mode = 2
+
+[node name="BTN_AudioSec" type="Button" parent="SectionControls/SlideSecOps/VLayout/VBTNLayout"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = ExtResource("2_nrln1")
+text = "Audio"
+
+[node name="BTN_VisualSec" type="Button" parent="SectionControls/SlideSecOps/VLayout/VBTNLayout"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_group = ExtResource("2_nrln1")
+text = "Visual"
+
+[node name="BTN_GameplaySec" type="Button" parent="SectionControls/SlideSecOps/VLayout/VBTNLayout"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_group = ExtResource("2_nrln1")
+text = "Gameplay"
+
+[node name="VOPLayout" type="VBoxContainer" parent="SectionControls/SlideSecOps/VLayout"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="SectionControls/SlideSecOps/VLayout/VOPLayout"]
+layout_mode = 2
+
+[node name="BTN_Apply" type="Button" parent="SectionControls/SlideSecOps/VLayout/VOPLayout"]
+layout_mode = 2
+text = "Apply"
+
+[node name="BTN_Back" type="Button" parent="SectionControls/SlideSecOps/VLayout/VOPLayout"]
+layout_mode = 2
+text = "Back"
+
+[node name="SlideSections" type="Container" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1bf36")
+slide_duration = 0.8
+transition_type = 7
+ease_type = 2
+
+[node name="AudioSection" type="GridContainer" parent="SlideSections"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+columns = 2
+
+[node name="LBL_Master" type="Label" parent="SlideSections/AudioSection"]
+layout_mode = 2
+text = "Master:"
+
+[node name="SLIDE_Master" type="HSlider" parent="SlideSections/AudioSection"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1000.0
+
+[node name="LBL_SFX" type="Label" parent="SlideSections/AudioSection"]
+layout_mode = 2
+text = "SFX:"
+
+[node name="SLIDE_SFX" type="HSlider" parent="SlideSections/AudioSection"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1000.0
+
+[node name="LBL_Music" type="Label" parent="SlideSections/AudioSection"]
+layout_mode = 2
+text = "Music:"
+
+[node name="SLIDE_Music" type="HSlider" parent="SlideSections/AudioSection"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1000.0
+
+[node name="GameplaySection" type="GridContainer" parent="SlideSections"]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 2
+
+[node name="Label" type="Label" parent="SlideSections/GameplaySection"]
+layout_mode = 2
+text = "Mouse Sensitivity:"
+
+[node name="Label2" type="Label" parent="SlideSections/GameplaySection"]
+layout_mode = 2
+text = "Mouse Look:"
+
+[node name="SensX" type="GridContainer" parent="SlideSections/GameplaySection"]
+layout_mode = 2
+columns = 2
+
+[node name="Label" type="Label" parent="SlideSections/GameplaySection/SensX"]
+layout_mode = 2
+text = "X: "
+
+[node name="SLIDER_MouseSensX" type="HSlider" parent="SlideSections/GameplaySection/SensX"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1000.0
+
+[node name="CHECK_MouseInvertX" type="CheckBox" parent="SlideSections/GameplaySection"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+text = ": Invert X"
+
+[node name="SensY" type="GridContainer" parent="SlideSections/GameplaySection"]
+layout_mode = 2
+columns = 2
+
+[node name="Label" type="Label" parent="SlideSections/GameplaySection/SensY"]
+layout_mode = 2
+text = "Y: "
+
+[node name="SLIDER_MouseSensY" type="HSlider" parent="SlideSections/GameplaySection/SensY"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1000.0
+
+[node name="CHECK_MouseInvertY" type="CheckBox" parent="SlideSections/GameplaySection"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+text = ": Invert Y"
+
+[connection signal="pressed" from="SectionControls/SlideSecOps/VLayout/VBTNLayout/BTN_AudioSec" to="." method="_on_btn_audio_sec_pressed"]
+[connection signal="pressed" from="SectionControls/SlideSecOps/VLayout/VBTNLayout/BTN_VisualSec" to="." method="_on_btn_visual_sec_pressed"]
+[connection signal="pressed" from="SectionControls/SlideSecOps/VLayout/VBTNLayout/BTN_GameplaySec" to="." method="_on_btn_gameplay_sec_pressed"]
+[connection signal="pressed" from="SectionControls/SlideSecOps/VLayout/VOPLayout/BTN_Apply" to="." method="_on_btn_apply_pressed"]
+[connection signal="pressed" from="SectionControls/SlideSecOps/VLayout/VOPLayout/BTN_Back" to="." method="_on_btn_back_pressed"]
+[connection signal="value_changed" from="SlideSections/AudioSection/SLIDE_Master" to="." method="_on_slide_master_value_changed"]
+[connection signal="value_changed" from="SlideSections/AudioSection/SLIDE_SFX" to="." method="_on_slide_sfx_value_changed"]
+[connection signal="value_changed" from="SlideSections/AudioSection/SLIDE_Music" to="." method="_on_slide_music_value_changed"]
+[connection signal="value_changed" from="SlideSections/GameplaySection/SensX/SLIDER_MouseSensX" to="." method="_on_slider_mouse_sens_x_value_changed"]
+[connection signal="toggled" from="SlideSections/GameplaySection/CHECK_MouseInvertX" to="." method="_on_check_mouse_invert_x_toggled"]
+[connection signal="value_changed" from="SlideSections/GameplaySection/SensY/SLIDER_MouseSensY" to="." method="_on_slider_mouse_sens_y_value_changed"]
+[connection signal="toggled" from="SlideSections/GameplaySection/CHECK_MouseInvertY" to="." method="_on_check_mouse_invert_y_toggled"]

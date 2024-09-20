@@ -33,13 +33,13 @@ extends Node3D
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		match Input.mouse_mode:
-			Input.MOUSE_MODE_CAPTURED:
-				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			_:
-				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+#func _unhandled_input(event: InputEvent) -> void:
+	#if event.is_action_pressed("ui_cancel"):
+		#match Input.mouse_mode:
+			#Input.MOUSE_MODE_CAPTURED:
+				#Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			#_:
+				#Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 # ------------------------------------------------------------------------------
 # Private Methods
