@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://1y10xtqkri2j"]
+[gd_scene load_steps=38 format=3 uid="uid://1y10xtqkri2j"]
 
 [ext_resource type="Script" path="res://objects/monster_eddie/monster_eddie.gd" id="1_2pdrk"]
 [ext_resource type="Script" path="res://scripts/asprite_unified_player_3d.gd" id="1_kkmaf"]
@@ -6,18 +6,148 @@
 [ext_resource type="Script" path="res://scripts/fsm/fsm.gd" id="2_rlsup"]
 [ext_resource type="Texture2D" uid="uid://hjuudw7htkr4" path="res://assets/graphics/monster_01/aft.png" id="3_empff"]
 [ext_resource type="Script" path="res://objects/monster_eddie/states/state_idle.gd" id="3_mnpe6"]
+[ext_resource type="Script" path="res://objects/monster_eddie/states/state_chase.gd" id="4_cjg83"]
+[ext_resource type="Script" path="res://objects/monster_eddie/states/state_attack.gd" id="5_c3i0e"]
+[ext_resource type="Texture2D" uid="uid://bnunrpy4l8680" path="res://assets/graphics/monster_01/fore_attack.png" id="5_y1a5u"]
 [ext_resource type="Script" path="res://scripts/vision_area_3d.gd" id="6_2lgkx"]
+[ext_resource type="PackedScene" uid="uid://dkvf3mgl722t4" path="res://objects/eddie_projectile/eddie_proj.tscn" id="6_dgju2"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_w5ai7"]
 radius = 1.0
 height = 3.0
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_rxo66"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e5eij"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ycj1h"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o2h53"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m3l70"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oqtcl"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vl4fu"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(96, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tj4de"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_piltt"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(128, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t7el2"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(144, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e0wba"]
+atlas = ExtResource("5_y1a5u")
+region = Rect2(160, 0, 16, 16)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_0qgm1"]
 atlas = ExtResource("2_d3iqa")
 region = Rect2(0, 0, 16, 16)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_a3emx"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jmljw"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mlvqw"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_388am"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4evhy"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_03t4s"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(96, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sk143"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_si1xl"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(128, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w52tx"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(144, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3k3eu"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(160, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_osnv5"]
+atlas = ExtResource("2_d3iqa")
+region = Rect2(176, 0, 16, 16)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_u7qmm"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rxo66")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e5eij")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ycj1h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o2h53")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m3l70")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oqtcl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vl4fu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tj4de")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_piltt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t7el2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e0wba")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_0qgm1")
@@ -25,27 +155,87 @@ animations = [{
 "loop": true,
 "name": &"idle",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a3emx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jmljw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mlvqw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_388am")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4evhy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_03t4s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sk143")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_si1xl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w52tx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3k3eu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_osnv5")
+}],
+"loop": true,
+"name": &"idle_blink",
+"speed": 12.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"idle_look_right",
+"speed": 5.0
 }]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ik5vq"]
-radius = 10.0
+radius = 40.0
 
-[node name="MonsterEddie" type="CharacterBody3D"]
+[node name="MonsterEddie" type="CharacterBody3D" node_paths=PackedStringArray("vision_area")]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_2pdrk")
+vision_area = NodePath("VisionArea3D")
+speed_forward = 7.0
 
 [node name="NavAgent" type="NavigationAgent3D" parent="."]
+path_desired_distance = 4.0
+target_desired_distance = 8.0
+path_max_distance = 4.01
+avoidance_enabled = true
+radius = 2.0
+debug_enabled = true
 
 [node name="FSM" type="Node" parent="." node_paths=PackedStringArray("host")]
 script = ExtResource("2_rlsup")
 host = NodePath("..")
 initial_state = &"Idle"
 
-[node name="Idle" type="Node" parent="FSM" node_paths=PackedStringArray("vision_area", "unified_player")]
+[node name="Idle" type="Node" parent="FSM" node_paths=PackedStringArray("unified_player")]
 script = ExtResource("3_mnpe6")
-vision_area = NodePath("../../VisionArea3D")
 unified_player = NodePath("../../ASUP")
+
+[node name="Chase" type="Node" parent="FSM" node_paths=PackedStringArray("agent")]
+script = ExtResource("4_cjg83")
+agent = NodePath("../../NavAgent")
+
+[node name="Attack" type="Node" parent="FSM" node_paths=PackedStringArray("spawn_point", "anim_sprite")]
+script = ExtResource("5_c3i0e")
+projectile = ExtResource("6_dgju2")
+spawn_point = NodePath("../../ProjectileSpawnPoint")
+anim_sprite = NodePath("../../ASUP/AS_Fore")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
@@ -61,7 +251,7 @@ pixel_size = 0.125
 double_sided = false
 texture_filter = 0
 sprite_frames = SubResource("SpriteFrames_u7qmm")
-animation = &"idle"
+animation = &"attack"
 
 [node name="SpriteAft" type="Sprite3D" parent="ASUP"]
 pixel_size = 0.125
@@ -84,3 +274,6 @@ shape = SubResource("CylinderShape3D_ik5vq")
 [node name="LOSRay" type="RayCast3D" parent="VisionArea3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.99978, 0)
 collision_mask = 3
+
+[node name="ProjectileSpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1)

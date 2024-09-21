@@ -46,7 +46,6 @@ func _physics_process(delta: float) -> void:
 	var base_damage : int = randi_range(min_damage, max_damage)
 	var damage : int = min(1, floor(float(base_damage) * dpps * delta))
 	for body : Node3D in _bodies.values():
-		print("Zip zap to ", body.name)
 		pass # Damage this smuck as well!
 
 # ------------------------------------------------------------------------------
@@ -67,7 +66,6 @@ func _on_body_entered(body : Node3D) -> void:
 	if dpps > 0.0:
 		_bodies[body.name] = body
 	else:
-		print("Peeeew Peew to ", body.name)
 		hit_occured.emit()
 		pass # TODO: Hurt this smuck!
 

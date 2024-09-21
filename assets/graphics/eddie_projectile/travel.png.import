@@ -2,20 +2,21 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnunrpy4l8680"
-path="res://.godot/imported/fore_attack.png-84cbff58465e60c78f6b21ba6f387a16.ctex"
+uid="uid://bcpa6sin6vtoe"
+path.s3tc="res://.godot/imported/travel.png-edbcce5f90734f6d9b2459ebfa98ad69.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
-source_file="res://assets/graphics/monster_01/fore_attack.png"
-dest_files=["res://.godot/imported/fore_attack.png-84cbff58465e60c78f6b21ba6f387a16.ctex"]
+source_file="res://assets/graphics/eddie_projectile/travel.png"
+dest_files=["res://.godot/imported/travel.png-edbcce5f90734f6d9b2459ebfa98ad69.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
